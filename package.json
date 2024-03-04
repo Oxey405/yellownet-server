@@ -1,0 +1,23 @@
+{
+  "name": "yellownet-server",
+  "version": "1.0.0",
+  "description": "The YELLOWNET server framework",
+  "homepage": "https://yellownet.oxey405.com",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsup"
+  },
+  "author": "Oxey405",
+  "license": "ISC",
+  "dependencies": {
+    "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "@types/ws": "^8.5.10",
+    "tsup": "^8.0.2",
+    "typescript": "^5.3.3",
+    "ws": "^8.16.0"
+  }
+}
