@@ -2,8 +2,10 @@
   "name": "yellownet-server",
   "version": "1.0.0",
   "description": "The YELLOWNET server framework",
+  "keywords": ["playdate", "network", "multiplayer", "protocol", "server"],
   "homepage": "https://yellownet.oxey405.com",
-  "main": "main.js",
+  "main": "./dist/main.js",
+  "module": "./dist/main.js",
   "type": "module",
   "scripts": {
     "build": "tsup"

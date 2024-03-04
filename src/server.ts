@@ -1,5 +1,6 @@
-import { WebSocketServer } from "ws";
+import { WebSocket, WebSocketServer } from "ws";
 import { Socket } from "./socket.js";
+import { Packet, PacketMethod } from "./packet.js";
 
 /**
  * Creates a new instance of a YELLOWNET server (YLWN://)
@@ -27,6 +28,10 @@ class YellownetServer {
    * Custom closing message
    */
   customCloseMessage: string = "server closed";
+  /**
+   * The connection callback
+   */
+  onSocketConnected: (socket: WebSocket) => void = () => {};
 
   constructor(config: {
     /**
@@ -39,15 +44,24 @@ class YellownetServer {
      * @default 'websocket'
      * */ 
     protocol?: "websocket";
+
   }) {
+    if(!config) {
+      config = {
+        port: 2278,
+        protocol: "websocket"
+      }
+    }
     this.port = config.port || 2278;
     this.protocol = config.protocol || "websocket";
     this.server = new WebSocketServer({
       port: this.port,
     });
-
+    this.server.on("listening", () => {
+      console.log("[YELLOWNET] Server listening")
+    })
     this.server.on("connection", (socket) => {
-      this.addSocket(new Socket(socket));
+      this.onSocketConnected(socket)
     });
     this.server.on("close", () => {
       this.sockets.forEach((socket) => {
@@ -58,6 +72,7 @@ class YellownetServer {
 
   addSocket(socket: Socket) {
     this.sockets.push(socket);
+    socket.sendPacket(new Packet('0', PacketMethod.SYS, 'server_init', 'empty'))
   }
 
   removeSocketBySessionID(socketUID: string) {
