@@ -7,9 +7,7 @@ class Packet {
     constructor(id: string, method: PacketMethod, resource: string, body: string) {
       this.id = id;
       this.method = method;
-      if(typeof this.method != typeof PacketMethod) {
-        this.valid = false
-      }
+      this.valid = Object.values(PacketMethod).includes(method)
       this.resource = resource;
       this.body = body;
     }

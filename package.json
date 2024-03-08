@@ -6,6 +6,7 @@
   "homepage": "https://yellownet.oxey405.com",
   "main": "./dist/main.js",
   "module": "./dist/main.js",
+  "types": "./dist/main.d.ts",
   "type": "module",
   "scripts": {
     "build": "tsup"

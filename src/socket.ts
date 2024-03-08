@@ -6,7 +6,7 @@ class Socket {
   packetID: number;
   sessionID: string;
   markedAsDestroyable: boolean;
-  onMessageCallbacks: Array<socketEventCallbackFunction>;
+  onMessageCallbacks: Array<MessageCallback>;
   constructor(socket: WebSocket) {
     this.sock = socket;
     this.packetID = 0;
@@ -17,14 +17,16 @@ class Socket {
       this.markedAsDestroyable = true;
     });
     socket.on("message", (ev) => {
+      console.log("[YELLOWNET] raw msg recieved : " + ev.toString())
       for (let i = 0; i < this.onMessageCallbacks.length; i++) {
         const callback = this.onMessageCallbacks[i];
         let packet = Packet.fromString(ev.toString());
+        console.log(packet)
         if(packet && packet.valid){
-            callback({
-                message: packet,
-                socket: this,
-            });
+          console.log(packet.toString())
+            callback(
+              packet, this
+            );
         }
       }
     });
@@ -42,7 +44,7 @@ class Socket {
     }
   }
 
-  on(label: "message", callback: socketEventCallbackFunction) {
+  on(label: "message", callback: MessageCallback) {
     if (label == "message") {
       this.onMessageCallbacks.push(callback);
     }
@@ -62,10 +64,8 @@ class Socket {
   }
 }
 
-type MessageEventResponse = {
-  message: Packet;
-  socket: Socket;
-};
-type socketEventCallbackFunction = (ev: MessageEventResponse) => {};
+interface MessageCallback {
+  (message: Packet, socket: Socket): void
 
+};
 export { Socket };
