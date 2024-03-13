@@ -1,13 +1,21 @@
 import { WebSocket } from "ws";
 import { randomUUID } from "crypto";
 import { Packet, PacketMethod } from "./packet.js";
-class Socket {
+import EventEmitter from "events";
+
+declare interface Socket {
+  on(event: 'request', listener: RequestCallback): this;
+  on(event: 'message', listener: MessageCallback): this;
+}
+
+class Socket extends EventEmitter {
   sock: WebSocket;
   packetID: number;
   sessionID: string;
   markedAsDestroyable: boolean;
   onMessageCallbacks: Array<MessageCallback>;
   constructor(socket: WebSocket) {
+    super();
     this.sock = socket;
     this.packetID = 0;
     this.sessionID = randomUUID();
@@ -16,19 +24,15 @@ class Socket {
     socket.on("close", () => {
       this.markedAsDestroyable = true;
     });
+
     socket.on("message", (ev) => {
       console.log("[YELLOWNET] raw msg recieved : " + ev.toString())
-      for (let i = 0; i < this.onMessageCallbacks.length; i++) {
-        const callback = this.onMessageCallbacks[i];
-        let packet = Packet.fromString(ev.toString());
-        console.log(packet)
-        if(packet && packet.valid){
-          console.log(packet.toString())
-            callback(
-              packet, this
-            );
-        }
+      let packet = Packet.fromString(ev.toString());
+      if(packet?.method == PacketMethod.REQ) {
+        this.emit('request', packet, this)
+        return;
       }
+      this.emit('message', packet, this)
     });
   }
   /**
@@ -41,12 +45,6 @@ class Socket {
       this.packetID += 1;
     } catch (error) {
       // Something happened...
-    }
-  }
-
-  on(label: "message", callback: MessageCallback) {
-    if (label == "message") {
-      this.onMessageCallbacks.push(callback);
     }
   }
 
@@ -66,6 +64,16 @@ class Socket {
 
 interface MessageCallback {
   (message: Packet, socket: Socket): void
-
 };
-export { Socket };
+
+interface RequestCallback {
+  (request: Packet, socket: Socket): AnswerPacket
+};
+
+class AnswerPacket extends Packet {
+  constructor(requestPacket: Packet, response: string) {
+    super(requestPacket.id as string, PacketMethod.ASW, requestPacket.resource, response)
+  }
+}
+
+export { Socket, AnswerPacket };
