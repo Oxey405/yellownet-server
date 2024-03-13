@@ -1,6 +1,6 @@
 {
   "name": "yellownet-server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "The YELLOWNET server framework",
   "keywords": ["playdate", "network", "multiplayer", "protocol", "server"],
   "homepage": "https://yellownet.oxey405.com",
