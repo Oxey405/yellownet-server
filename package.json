@@ -1,9 +1,13 @@
 {
   "name": "yellownet-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The YELLOWNET server framework",
   "keywords": ["playdate", "network", "multiplayer", "protocol", "server"],
   "homepage": "https://yellownet.oxey405.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oxey405/yellownet-server"
+  },
   "main": "./dist/main.js",
   "module": "./dist/main.js",
   "types": "./dist/main.d.ts",
