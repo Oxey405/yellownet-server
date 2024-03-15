@@ -28,7 +28,7 @@ class Socket extends EventEmitter {
     socket.on("message", (ev) => {
       console.log("[YELLOWNET] raw msg recieved : " + ev.toString())
       let packet = Packet.fromString(ev.toString());
-      if(packet?.method == PacketMethod.REQ) {
+      if(packet?.method == PacketMethod.REQ) {;
         this.emit('request', packet, this)
         return;
       }
@@ -67,7 +67,7 @@ interface MessageCallback {
 };
 
 interface RequestCallback {
-  (request: Packet, socket: Socket): AnswerPacket
+  (request: Packet, socket: Socket): void
 };
 
 class AnswerPacket extends Packet {
